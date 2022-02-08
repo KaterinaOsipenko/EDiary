@@ -1,6 +1,7 @@
 package company;
 
-public class Student extends Person {
+public class Teacher extends Person {
+
     private int id;
 
     public int getId() {

@@ -4,10 +4,7 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class StudentRepository {
-    static String url = "jdbc:mysql://localhost:3306/diary";
-    static String user = "root";
-    static String password = "K30052003o_";
-    private Connection connection;
+    private final Connection connection;
     static final Scanner scanner = new Scanner(System.in);
 
     StudentRepository (Connection connection) {
@@ -17,7 +14,7 @@ public class StudentRepository {
 
     public void insertStudents() {
         String insert = "INSERT INTO students (first_name, last_name) VALUES (?, ?)";
-        Student student = new Student();
+        Person student = new Student();
         System.out.print("Please, enter the student`s first name: ");
         String nameStudent = scanner.next();
         student.setName(nameStudent);
@@ -35,32 +32,39 @@ public class StudentRepository {
     }
 
     private void createTable() {
-        System.out.println("Creating table students...");
-        String createTable = "CREATE TABlE IF NOT EXISTS students (" +
-                "id int(6) Primary Key AUTO_INCREMENT," +
-                "first_name varchar(33) NOT NULL," +
-                "last_name varchar(33) NOT NULL)";
         try (Statement statement = this.connection.createStatement()) {
-            statement.executeUpdate(createTable);
-            System.out.println("Table students was created!");
-        } catch (SQLException e) {
-            e.printStackTrace();
+            DatabaseMetaData dbData = this.connection.getMetaData();
+            ResultSet setTables = dbData.getTables(null, null, "students", null);
+            if (setTables.next()) {
+                System.out.println("Table students has already exists!");
+            } else {
+                System.out.println("\nCreating table students...\n");
+                String createTable = "CREATE TABlE IF NOT EXISTS students (" +
+                        "id int(6) Primary Key AUTO_INCREMENT," +
+                        "first_name varchar(33) NOT NULL," +
+                        "last_name varchar(33) NOT NULL)";
+                statement.executeUpdate(createTable);
+                System.out.println("\nTable students was created!\n");
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
+
     }
 
     public void dropStudents() {
         String drop = "DROP TABLE IF EXISTS students";
-        System.out.println("Deleting table students...");
+        System.out.println("\nDeleting table students...\n");
         try (Statement statement = connection.createStatement()) {
             statement.execute(drop);
-            System.out.println("Deleting was successful!");
+            System.out.println("\nDeleting was successful!\n");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public void selectAllStudents() {
-        System.out.println("\nTable students");
+        System.out.println("\nTable students\n");
         try (Statement statement = connection.createStatement();
              ResultSet selectAll = statement.executeQuery("SELECT * FROM students")) {
             while (selectAll.next()) {

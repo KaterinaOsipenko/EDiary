@@ -18,9 +18,10 @@ public class Main {
         try {
             Connection connection = DriverManager.getConnection(url2, user, password);
             StudentRepository tableStudent = new StudentRepository(connection);
-            tableStudent.insertStudents();
             tableStudent.selectAllStudents();
-
+            TeacherRepository tableTeacher = new TeacherRepository(connection);
+            tableTeacher.insertTeachers();
+            tableTeacher.selectAllTeachers();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
