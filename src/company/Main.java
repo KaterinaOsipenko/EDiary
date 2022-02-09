@@ -2,8 +2,6 @@ package company;
 
 import java.sql.*;
 
-import static company.StudentRepository.*;
-
 public class Main {
 
     static String url = "jdbc:mysql://localhost:3306/";
@@ -18,10 +16,16 @@ public class Main {
         try {
             Connection connection = DriverManager.getConnection(url2, user, password);
             StudentRepository tableStudent = new StudentRepository(connection);
-            tableStudent.selectAllStudents();
             TeacherRepository tableTeacher = new TeacherRepository(connection);
-            tableTeacher.insertTeachers();
-            tableTeacher.selectAllTeachers();
+            SubjectRepository tableSubject = new SubjectRepository(connection, tableTeacher.getCount());
+            Student_SubjectRepository tableStudentsSubjects = new Student_SubjectRepository(connection, tableStudent.getCount(), tableSubject.getCount());
+            tableSubject.selectAllSubjects();
+            tableSubject.joinWithTeachers();
+            tableStudentsSubjects.selectAllStudents_Subjects();
+            tableStudentsSubjects.selectAllDiary();
+
+
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

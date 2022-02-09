@@ -40,7 +40,7 @@ public class StudentRepository {
             } else {
                 System.out.println("\nCreating table students...\n");
                 String createTable = "CREATE TABlE IF NOT EXISTS students (" +
-                        "id int(6) Primary Key AUTO_INCREMENT," +
+                        "id int(6) PRIMARY KEY AUTO_INCREMENT," +
                         "first_name varchar(33) NOT NULL," +
                         "last_name varchar(33) NOT NULL)";
                 statement.executeUpdate(createTable);
@@ -64,7 +64,8 @@ public class StudentRepository {
     }
 
     public void selectAllStudents() {
-        System.out.println("\nTable students\n");
+        System.out.println("\nTable students");
+        System.out.println("--------------------------------------");
         try (Statement statement = connection.createStatement();
              ResultSet selectAll = statement.executeQuery("SELECT * FROM students")) {
             while (selectAll.next()) {
@@ -73,5 +74,19 @@ public class StudentRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getCount() {
+        int res = 0;
+        String count = "SELECT COUNT(*) FROM students";
+        try (Statement statement = this.connection.createStatement()) {
+            ResultSet countRes =  statement.executeQuery(count);
+            while (countRes.next()) {
+                res = countRes.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
     }
 }
