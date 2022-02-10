@@ -30,12 +30,12 @@ public class Student_SubjectRepository {
                         "subject_id int(6)  NOT NULL," +
                         "FOREIGN KEY (student_id) REFERENCES students(id), " +
                         "FOREIGN KEY (subject_id) REFERENCES subjects(id)" +
-                        "ON UPDATE CASCADE)";
+                        "ON UPDATE CASCADE ON DELETE CASCADE)";
                 statement.executeUpdate(createTable);
                 System.out.println("\nTable student_subject was created!\n");
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -88,6 +88,19 @@ public class Student_SubjectRepository {
         try (Statement statement = connection.createStatement()) {
             statement.execute(drop);
             System.out.println("\nDeleting was successful!\n");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addStudentToSubject () {
+        System.out.print("Enter the student id which you want to add: ");
+        int studentId = scanner.nextInt();
+        System.out.print("\nEnter the subject is which you want to add: ");
+        int subjectId = scanner.nextInt();
+        String add = "INSERT INTO student_subject (student_id, subject_id) VALUES ('" + studentId + "', '" + subjectId + "')";
+        try (PreparedStatement insertTeacher = this.connection.prepareStatement(add)) {
+            insertTeacher.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

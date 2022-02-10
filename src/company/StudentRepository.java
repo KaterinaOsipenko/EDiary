@@ -49,7 +49,6 @@ public class StudentRepository {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
     }
 
     public void dropStudents() {
@@ -58,6 +57,33 @@ public class StudentRepository {
         try (Statement statement = connection.createStatement()) {
             statement.execute(drop);
             System.out.println("\nDeleting was successful!\n");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateStudent () {
+        System.out.print("Enter the student`s id whose data you want to update: ");
+        int studentId = scanner.nextInt();
+        System.out.print("Enter the new value of first name: ");
+        String name = scanner.next();
+        System.out.print("Enter the new value of last name: ");
+        String surname = scanner.next();
+        String update = "UPDATE students SET first_name = '" + name +  "' last_name = '" + surname + "' WHERE id = " + studentId;
+        System.out.println(update);
+        try(PreparedStatement statement = this.connection.prepareStatement(update)) {
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteStudent () {
+        System.out.print("Enter the student`s id who you want to delete from tables: ");
+        int studentId = scanner.nextInt();
+        String delete = "DELETE FROM students WHERE id = " + studentId;
+        try(PreparedStatement statement = this.connection.prepareStatement(delete)) {
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

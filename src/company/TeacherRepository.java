@@ -74,6 +74,21 @@ public class TeacherRepository {
             e.printStackTrace();
         }
     }
+    public void updateTeacher () {
+        System.out.print("Enter the teacher`s id whose data you want to update: ");
+        int teacherId = scanner.nextInt();
+        System.out.print("Enter the new value of first name: ");
+        String name = scanner.next();
+        System.out.print("Enter the new value of last name: ");
+        String surname = scanner.next();
+        String update = "UPDATE students SET first_name = '" + name +  "' last_name = '" + surname + "' WHERE id = " + teacherId;
+        System.out.println(update);
+        try(PreparedStatement statement = this.connection.prepareStatement(update)) {
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public int getCount() {
         int res = 0;
@@ -87,6 +102,17 @@ public class TeacherRepository {
             e.printStackTrace();
         }
         return res;
+    }
+
+    public void deleteTeacher () {
+        System.out.print("Enter the teacher`s id who you want to delete from tables: ");
+        int teacherId = scanner.nextInt();
+        String delete = "DELETE FROM students WHERE id = " + teacherId;
+        try(PreparedStatement statement = this.connection.prepareStatement(delete)) {
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void joinWithSubjects () {

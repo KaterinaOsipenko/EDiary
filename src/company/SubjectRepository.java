@@ -36,6 +36,15 @@ public class SubjectRepository {
         }
     }
 
+    public void alterTeachers() {
+        String alert = "ALTER TABLE subjects ADD CONSTRAINT teacher_fk FOREIGN KEY (teacher) REFERENCES teachers(id) ON DELETE CASCADE";
+        try(PreparedStatement statement = this.connection.prepareStatement(alert)) {
+            statement.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
     public void insertSubject() {
         int i = (int)(Math.random() * (this.count - 1)) + 1;
         String insert = "INSERT INTO subjects (name, teacher) VALUES (?, (SELECT id FROM teachers WHERE id = " + i + "))";
@@ -47,6 +56,30 @@ public class SubjectRepository {
             insertTeacher.setString(1, subject.getName());
             insertTeacher.executeUpdate();
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateSubject () {
+        System.out.print("Enter the subject`s id whose name you want to change: ");
+        int subjectId = scanner.nextInt();
+        System.out.print("Enter the new value of the subject`s name: ");
+        String subjectName = scanner.next();
+        String update = "UPDATE subjects SET name = '" + subjectName + "' WHERE id = " + subjectId;
+        try(PreparedStatement statement = this.connection.prepareStatement(update)) {
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteSubject () {
+        System.out.print("Enter subject`s id that you want to delete from tables: ");
+        int subjectId = scanner.nextInt();
+        String delete = "DELETE FROM subjects WHERE id = " + subjectId;
+        try(PreparedStatement statement = this.connection.prepareStatement(delete)) {
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
