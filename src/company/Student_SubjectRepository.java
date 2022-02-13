@@ -5,13 +5,9 @@ import java.util.Scanner;
 
 public class Student_SubjectRepository {
     static final Scanner scanner = new Scanner(System.in);
-    private Connection connection;
-    private int countStudents;
-    private int countSubjects;
+    private final Connection connection;
 
-    Student_SubjectRepository (Connection connection, int countStudents, int countSubjects) {
-        this.countStudents =  countStudents;
-        this.countSubjects = countSubjects;
+    Student_SubjectRepository (Connection connection) {
         this.connection = connection;
         createTable();
     }
@@ -27,15 +23,25 @@ public class Student_SubjectRepository {
                 String createTable = "CREATE TABlE IF NOT EXISTS student_subject (" +
                         "id int(6) PRIMARY KEY AUTO_INCREMENT," +
                         "student_id int(6)  NOT NULL," +
-                        "subject_id int(6)  NOT NULL," +
-                        "FOREIGN KEY (student_id) REFERENCES students(id), " +
-                        "FOREIGN KEY (subject_id) REFERENCES subjects(id)" +
-                        "ON UPDATE CASCADE ON DELETE CASCADE)";
+                        "subject_id int(6)  NOT NULL)";
                 statement.executeUpdate(createTable);
                 System.out.println("\nTable student_subject was created!\n");
+                alterAdd();
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void alterAdd() {
+        String addStudent = "ALTER TABLE student_subject ADD CONSTRAINT student_fk FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE ON UPDATE CASCADE";
+        String addUpdate = "ALTER TABLE student_subject ADD CONSTRAINT subject_fk FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE ON UPDATE CASCADE";
+        try(PreparedStatement statement = this.connection.prepareStatement(addStudent);
+            PreparedStatement statement1 = this.connection.prepareStatement(addUpdate)) {
+            statement.executeUpdate();
+            statement1.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
@@ -59,7 +65,7 @@ public class Student_SubjectRepository {
              ResultSet selectAll = statement.executeQuery("SELECT student_subject.id, students.id, students.first_name, " +
                      "students.last_name, subjects.id, subjects.name  FROM student_subject, " +
                      " students, subjects WHERE student_subject.student_id = students.id " +
-                     "AND student_subject.subject_id = subjects.id;")) {
+                     "AND student_subject.subject_id = subjects.id")) {
             while (selectAll.next()) {
                 System.out.println(selectAll.getString(1) + " " + selectAll.getString(2) + " " + selectAll.getString(3) +
                         " " + selectAll.getString(4) + " " + selectAll.getString(5) + " " + selectAll.getString(6));
@@ -69,20 +75,8 @@ public class Student_SubjectRepository {
         }
     }
 
-    public void insertSubject() {
-        int i = (int)(Math.random() * (this.countStudents - 1)) + 1;
-        int j = (int)(Math.random() * (this.countSubjects - 1)) + 1;
-        String insert = "INSERT INTO student_subject (student_id, subject_id) VALUES (" +
-                "(SELECT id FROM students WHERE id = " + i + ")" +
-                ", (SELECT id FROM subjects WHERE id = " + j + "))";
-        try (PreparedStatement insertTeacher = this.connection.prepareStatement(insert)) {
-            insertTeacher.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void dropStudents_Subjects() {
+        removeConstraint();
         String drop = "DROP TABLE IF EXISTS student_subject";
         System.out.println("\nDeleting table student_subject...\n");
         try (Statement statement = connection.createStatement()) {
@@ -90,6 +84,30 @@ public class Student_SubjectRepository {
             System.out.println("\nDeleting was successful!\n");
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void selectName() {
+        System.out.print("Enter the student_subject`s id: ");
+        int student_subjectId = scanner.nextInt();
+        String selectName = "SELECT  students.first_name, students.last_name, subjects.name " +
+                "FROM student_subject, students, subjects WHERE student_subject.student_id = students.id AND student_subject.subject_id = subjects.id AND student_subject.id = " + student_subjectId;
+        try(Statement statement = this.connection.createStatement();
+            ResultSet set = statement.executeQuery(selectName)) {
+            while (set.next()) {
+                System.out.println(set.getString(1) + " " + set.getString(2) + " " + set.getString(3));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeConstraint() {
+        String removeAttendance = "ALTER TABLE attendance DROP CONSTRAINT student_subject_fk";
+        try(PreparedStatement statement = this.connection.prepareStatement(removeAttendance)) {
+            statement.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 

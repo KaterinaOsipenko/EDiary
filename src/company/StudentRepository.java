@@ -1,11 +1,13 @@
 package company;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class StudentRepository {
     private final Connection connection;
     static final Scanner scanner = new Scanner(System.in);
+    private ArrayList<Student> listStudents = new ArrayList<>();
 
     StudentRepository (Connection connection) {
         this.connection = connection;
@@ -14,14 +16,12 @@ public class StudentRepository {
 
     public void insertStudents() {
         String insert = "INSERT INTO students (first_name, last_name) VALUES (?, ?)";
-        Person student = new Student();
         System.out.print("Please, enter the student`s first name: ");
         String nameStudent = scanner.next();
-        student.setName(nameStudent);
         System.out.print("Please, enter the student`s last name: ");
         String lastNameStudent = scanner.next();
-        student.setSurname(lastNameStudent);
-
+        Student student = new Student(nameStudent, lastNameStudent);
+        listStudents.add(student);
         try (PreparedStatement insertStudent = this.connection.prepareStatement(insert)) {
             insertStudent.setString(1, student.getName());
             insertStudent.setString(2, student.getSurname());
@@ -52,6 +52,7 @@ public class StudentRepository {
     }
 
     public void dropStudents() {
+        removeAdd();
         String drop = "DROP TABLE IF EXISTS students";
         System.out.println("\nDeleting table students...\n");
         try (Statement statement = connection.createStatement()) {
@@ -69,7 +70,7 @@ public class StudentRepository {
         String name = scanner.next();
         System.out.print("Enter the new value of last name: ");
         String surname = scanner.next();
-        String update = "UPDATE students SET first_name = '" + name +  "' last_name = '" + surname + "' WHERE id = " + studentId;
+        String update = "UPDATE students SET first_name = '" + name +  "' ,last_name = '" + surname + "' WHERE id = " + studentId;
         System.out.println(update);
         try(PreparedStatement statement = this.connection.prepareStatement(update)) {
             statement.executeUpdate();
@@ -102,11 +103,37 @@ public class StudentRepository {
         }
     }
 
+    public void selectName() {
+        System.out.print("Enter the student`s id: ");
+        int studentId = scanner.nextInt();
+        String selectName = "SELECT first_name, last_name FROM students WHERE id = " + studentId;
+        try(Statement statement = this.connection.createStatement();
+            ResultSet set = statement.executeQuery(selectName)) {
+            while (set.next()) {
+                System.out.println(set.getString(1) + " " + set.getString(2));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public void removeAdd() {
+        String removeStudent = "ALTER TABLE student_subject DROP CONSTRAINT student_fk";
+        String removeSubject = "ALTER TABLE student_subject DROP CONSTRAINT subject_fk";
+        try(PreparedStatement statement = this.connection.prepareStatement(removeStudent);
+            PreparedStatement statement1 = this.connection.prepareStatement(removeSubject)) {
+            statement.executeUpdate();
+            statement1.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
     public int getCount() {
         int res = 0;
         String count = "SELECT COUNT(*) FROM students";
-        try (Statement statement = this.connection.createStatement()) {
-            ResultSet countRes =  statement.executeQuery(count);
+        try (Statement statement = this.connection.createStatement();
+            ResultSet countRes =  statement.executeQuery(count)) {
             while (countRes.next()) {
                 res = countRes.getInt(1);
             }

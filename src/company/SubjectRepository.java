@@ -1,17 +1,17 @@
 package company;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 import company.Main.*;
 
 public class SubjectRepository {
     static final Scanner scanner = new Scanner(System.in);
     private Connection connection;
-    int count;
+    private ArrayList<Subject> listSubjects = new ArrayList<>();
 
-    SubjectRepository (Connection connection, int count) {
+    SubjectRepository (Connection connection) {
         this.connection = connection;
-        this.count = count;
         createTable();
     }
 
@@ -26,10 +26,10 @@ public class SubjectRepository {
                 String createTable = "CREATE TABlE IF NOT EXISTS subjects (" +
                         "id int(6) PRIMARY KEY AUTO_INCREMENT," +
                         "name varchar(33) NOT NULL," +
-                        "teacher int(6) NOT NULL," +
-                        "FOREIGN KEY (teacher) REFERENCES teachers(id) ON UPDATE CASCADE)";
+                        "teacher int(6) NOT NULL)";
                 statement.executeUpdate(createTable);
                 System.out.println("\nTable subjects was created!\n");
+                alterTeachers();
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -40,22 +40,22 @@ public class SubjectRepository {
         String alert = "ALTER TABLE subjects ADD CONSTRAINT teacher_fk FOREIGN KEY (teacher) REFERENCES teachers(id) ON DELETE CASCADE";
         try(PreparedStatement statement = this.connection.prepareStatement(alert)) {
             statement.executeUpdate();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
-    public void insertSubject() {
-        int i = (int)(Math.random() * (this.count - 1)) + 1;
+    public void insertSubject(int count) {
+        int i = (int)(Math.random() * (count - 1)) + 1;
         String insert = "INSERT INTO subjects (name, teacher) VALUES (?, (SELECT id FROM teachers WHERE id = " + i + "))";
         Subject subject = new Subject();
         System.out.print("Please, enter the subject`s name: ");
         String nameSubject = scanner.next();
         subject.setName(nameSubject);
+        listSubjects.add(subject);
         try (PreparedStatement insertTeacher = this.connection.prepareStatement(insert)) {
             insertTeacher.setString(1, subject.getName());
             insertTeacher.executeUpdate();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -71,6 +71,20 @@ public class SubjectRepository {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void selectName() {
+        System.out.print("Enter the subject`s id: ");
+        int subjectId = scanner.nextInt();
+        String selectName = "SELECT name FROM subjects WHERE id = " + subjectId;
+        try(Statement statement = this.connection.createStatement();
+            ResultSet set = statement.executeQuery(selectName)) {
+            while (set.next()) {
+                System.out.println(set.getString(1));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
@@ -112,8 +126,8 @@ public class SubjectRepository {
     public int getCount() {
         int res = 0;
         String count = "SELECT COUNT(*) FROM subjects";
-        try (Statement statement = this.connection.createStatement()) {
-            ResultSet countRes =  statement.executeQuery(count);
+        try (Statement statement = this.connection.createStatement();
+            ResultSet countRes =  statement.executeQuery(count)) {
             while (countRes.next()) {
                 res = countRes.getInt(1);
             }
@@ -126,15 +140,19 @@ public class SubjectRepository {
     public void joinWithTeachers () {
         String join = "SELECT subjects.id,subjects.name, teachers.first_name, teachers.last_name FROM subjects, teachers " +
                 "WHERE subjects.id = teachers.id";
-        try (Statement statement = this.connection.createStatement()) {
+        try (Statement statement = this.connection.createStatement();
+             ResultSet joinSet = statement.executeQuery(join)) {
             System.out.println("\nJoin-table subjects with teachers:");
             System.out.println("--------------------------------------");
-            ResultSet joinSet = statement.executeQuery(join);
             while (joinSet.next()) {
                 System.out.println(joinSet.getString(1) + " " + joinSet.getString(2) + " " + joinSet.getString(3) + " " + joinSet.getString(4));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    public ArrayList<Subject> getListSubjects() {
+        return listSubjects;
     }
 }
