@@ -3,7 +3,7 @@ package company;
 import java.sql.*;
 import java.util.Scanner;
 
-public class AttendenceRepository {
+public class AttendenceRepository implements Tables {
     static final Scanner scanner = new Scanner(System.in);
     private Connection connection;
 
@@ -45,7 +45,34 @@ public class AttendenceRepository {
         }
     }
 
-    public void updateStudent () {
+    @Override
+    public void dropTable() {
+        String drop = "DROP TABLE IF EXISTS attendance";
+        System.out.println("\nDeleting table attendance...\n");
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(drop);
+            System.out.println("\nDeleting was attendance!\n");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void insertData() {
+        System.out.print("Enter the id of student_subject: ");
+        int id = scanner.nextInt();
+        System.out.print("Enter the day of week: ");
+        String dayOfWeek = scanner.next();
+        String insert = "INSERT INTO attendance (student_subject_id, " + dayOfWeek + ") VALUES (" + id + ", 'abs')";
+        try (PreparedStatement insertTeacher = this.connection.prepareStatement(insert)) {
+            insertTeacher.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateData() {
         System.out.print("Enter the id student_subject that you want to update: ");
         int studentId = scanner.nextInt();
         System.out.print("Enter the day of week that you would like to change:  ");
@@ -60,6 +87,7 @@ public class AttendenceRepository {
         }
     }
 
+    @Override
     public void selectAll() {
         System.out.println("\nTable attendance");
         System.out.println("--------------------------------------");
@@ -75,7 +103,8 @@ public class AttendenceRepository {
         }
     }
 
-    public void deleteAttendance() {
+    @Override
+    public void deleteRow() {
         System.out.print("Enter id of students_subjects that you want to delete from tables: ");
         int id = scanner.nextInt();
         String delete = "DELETE FROM attendance WHERE student_subject_id = " + id;
@@ -86,34 +115,25 @@ public class AttendenceRepository {
         }
     }
 
-    public void insert() {
-        System.out.print("Enter the id of student_subject: ");
-        int id = scanner.nextInt();
-        System.out.print("Enter the day of week: ");
-        String dayOfWeek = scanner.next();
-        String insert = "INSERT INTO attendance (student_subject_id, " + dayOfWeek + ") VALUES (" + id + ", 'abs')";
-        try (PreparedStatement insertTeacher = this.connection.prepareStatement(insert)) {
-            insertTeacher.executeUpdate();
+    @Override
+    public void selectByName() {
+        System.out.print("Enter the students id: ");
+        int studentsId = scanner.nextInt();
+        String selectName = "SELECT subjects.name, attendance.monday, attendance.tuesday, attendance.wednesday, attendance.thursday," +
+                " attendance.friday FROM attendance, student_subject, students, subjects WHERE " +
+                "attendance.student_subject_id = student_subject.id AND student_subject.student_id = students.id AND " +
+                "student_subject.subject_id = subjects.id AND students.id = " + studentsId;
+        try (Statement statement = this.connection.createStatement();
+             ResultSet selectAll = statement.executeQuery(selectName)) {
+            System.out.println("           " + "Mon " + "Tue " + "Wed " + "Thur " + "Frd ");
+            while (selectAll.next()) {
+                System.out.println(selectAll.getString(1) + "    " + selectAll.getString(2) + "    " + selectAll.getString(3) + "   " +
+                        selectAll.getString(4) + "   " + selectAll.getString(5) + "    " + selectAll.getString(6));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-
-    public void drop() {
-        String drop = "DROP TABLE IF EXISTS attendance";
-        System.out.println("\nDeleting table attendance...\n");
-        try (Statement statement = connection.createStatement()) {
-            statement.execute(drop);
-            System.out.println("\nDeleting was attendance!\n");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-//     String all = "SELECT students.id, subjects.name AS subName, attendance.monday, " +
-//                "attendance.tuesday, attendance.wednesday, attendance.thursday, attendance.friday FROM student_subject," +
-//                " students, subjects, attendance WHERE student_subject.student_id = students.id AND" +
-//                " student_subject.subject_id = subjects.id AND attendance.student_subject_id = student_subject.id;";
-//
 
 }

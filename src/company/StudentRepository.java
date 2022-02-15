@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class StudentRepository {
+public class StudentRepository implements Tables {
     private final Connection connection;
     static final Scanner scanner = new Scanner(System.in);
     private ArrayList<Student> listStudents = new ArrayList<>();
@@ -12,23 +12,6 @@ public class StudentRepository {
     StudentRepository (Connection connection) {
         this.connection = connection;
         createTable();
-    }
-
-    public void insertStudents() {
-        String insert = "INSERT INTO students (first_name, last_name) VALUES (?, ?)";
-        System.out.print("Please, enter the student`s first name: ");
-        String nameStudent = scanner.next();
-        System.out.print("Please, enter the student`s last name: ");
-        String lastNameStudent = scanner.next();
-        Student student = new Student(nameStudent, lastNameStudent);
-        listStudents.add(student);
-        try (PreparedStatement insertStudent = this.connection.prepareStatement(insert)) {
-            insertStudent.setString(1, student.getName());
-            insertStudent.setString(2, student.getSurname());
-            insertStudent.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     private void createTable() {
@@ -46,12 +29,13 @@ public class StudentRepository {
                 statement.executeUpdate(createTable);
                 System.out.println("\nTable students was created!\n");
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
-    public void dropStudents() {
+    @Override
+    public void dropTable() {
         removeAdd();
         String drop = "DROP TABLE IF EXISTS students";
         System.out.println("\nDeleting table students...\n");
@@ -63,7 +47,26 @@ public class StudentRepository {
         }
     }
 
-    public void updateStudent () {
+    @Override
+    public void insertData() {
+        String insert = "INSERT INTO students (first_name, last_name) VALUES (?, ?)";
+        System.out.print("Please, enter the student`s first name: ");
+        String nameStudent = scanner.next();
+        System.out.print("Please, enter the student`s last name: ");
+        String lastNameStudent = scanner.next();
+        Student student = new Student(nameStudent, lastNameStudent);
+        listStudents.add(student);
+        try (PreparedStatement insertStudent = this.connection.prepareStatement(insert)) {
+            insertStudent.setString(1, student.getName());
+            insertStudent.setString(2, student.getSurname());
+            insertStudent.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateData() {
         System.out.print("Enter the student`s id whose data you want to update: ");
         int studentId = scanner.nextInt();
         System.out.print("Enter the new value of first name: ");
@@ -79,18 +82,8 @@ public class StudentRepository {
         }
     }
 
-    public void deleteStudent () {
-        System.out.print("Enter the student`s id who you want to delete from tables: ");
-        int studentId = scanner.nextInt();
-        String delete = "DELETE FROM students WHERE id = " + studentId;
-        try(PreparedStatement statement = this.connection.prepareStatement(delete)) {
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void selectAllStudents() {
+    @Override
+    public void selectAll() {
         System.out.println("\nTable students");
         System.out.println("--------------------------------------");
         try (Statement statement = connection.createStatement();
@@ -103,7 +96,20 @@ public class StudentRepository {
         }
     }
 
-    public void selectName() {
+    @Override
+    public void deleteRow() {
+        System.out.print("Enter the student`s id who you want to delete from tables: ");
+        int studentId = scanner.nextInt();
+        String delete = "DELETE FROM students WHERE id = " + studentId;
+        try(PreparedStatement statement = this.connection.prepareStatement(delete)) {
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void selectByName() {
         System.out.print("Enter the student`s id: ");
         int studentId = scanner.nextInt();
         String selectName = "SELECT first_name, last_name FROM students WHERE id = " + studentId;

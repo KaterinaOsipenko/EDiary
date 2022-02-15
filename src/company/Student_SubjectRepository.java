@@ -3,7 +3,7 @@ package company;
 import java.sql.*;
 import java.util.Scanner;
 
-public class Student_SubjectRepository {
+public class Student_SubjectRepository implements Tables{
     static final Scanner scanner = new Scanner(System.in);
     private final Connection connection;
 
@@ -58,7 +58,60 @@ public class Student_SubjectRepository {
         }
     }
 
-    public void selectAllDiary() {
+    private void removeConstraint() {
+        String removeAttendance = "ALTER TABLE attendance DROP CONSTRAINT student_subject_fk";
+        try(PreparedStatement statement = this.connection.prepareStatement(removeAttendance)) {
+            statement.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    @Override
+    public void dropTable() {
+        removeConstraint();
+        String drop = "DROP TABLE IF EXISTS student_subject";
+        System.out.println("\nDeleting table student_subject...\n");
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(drop);
+            System.out.println("\nDeleting was successful!\n");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void insertData() {
+        System.out.print("Enter the student id which you want to add: ");
+        int studentId = scanner.nextInt();
+        System.out.print("\nEnter the subject is which you want to add: ");
+        int subjectId = scanner.nextInt();
+        String add = "INSERT INTO student_subject (student_id, subject_id) VALUES ('" + studentId + "', '" + subjectId + "')";
+        try (PreparedStatement insertTeacher = this.connection.prepareStatement(add)) {
+            insertTeacher.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateData() {
+        System.out.print("Enter student_subjects id that you want to update: ");
+        int id = scanner.nextInt();
+        System.out.print("Enter the id of student that you want to update: ");
+        int studentId = scanner.nextInt();
+        System.out.print("Enter id of subject that you would like to change:  ");
+        int subjectId = scanner.nextInt();
+        String update = "UPDATE student_subject SET student_id = " +  studentId + "subject_id = " + subjectId + " WHERE student_subject.id = " + id;
+        try(PreparedStatement statement = this.connection.prepareStatement(update)) {
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void selectAll() {
         System.out.println("\nTable diary student_subject");
         System.out.println("--------------------------------------");
         try (Statement statement = this.connection.createStatement();
@@ -75,19 +128,20 @@ public class Student_SubjectRepository {
         }
     }
 
-    public void dropStudents_Subjects() {
-        removeConstraint();
-        String drop = "DROP TABLE IF EXISTS student_subject";
-        System.out.println("\nDeleting table student_subject...\n");
-        try (Statement statement = connection.createStatement()) {
-            statement.execute(drop);
-            System.out.println("\nDeleting was successful!\n");
+    @Override
+    public void deleteRow() {
+        System.out.print("Enter id of students_subjects that you want to delete from tables: ");
+        int id = scanner.nextInt();
+        String delete = "DELETE FROM student_subject WHERE student_subject.id = " + id;
+        try(PreparedStatement statement = this.connection.prepareStatement(delete)) {
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void selectName() {
+    @Override
+    public void selectByName() {
         System.out.print("Enter the student_subject`s id: ");
         int student_subjectId = scanner.nextInt();
         String selectName = "SELECT  students.first_name, students.last_name, subjects.name " +
@@ -97,28 +151,6 @@ public class Student_SubjectRepository {
             while (set.next()) {
                 System.out.println(set.getString(1) + " " + set.getString(2) + " " + set.getString(3));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void removeConstraint() {
-        String removeAttendance = "ALTER TABLE attendance DROP CONSTRAINT student_subject_fk";
-        try(PreparedStatement statement = this.connection.prepareStatement(removeAttendance)) {
-            statement.executeUpdate();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }
-
-    public void addStudentToSubject () {
-        System.out.print("Enter the student id which you want to add: ");
-        int studentId = scanner.nextInt();
-        System.out.print("\nEnter the subject is which you want to add: ");
-        int subjectId = scanner.nextInt();
-        String add = "INSERT INTO student_subject (student_id, subject_id) VALUES ('" + studentId + "', '" + subjectId + "')";
-        try (PreparedStatement insertTeacher = this.connection.prepareStatement(add)) {
-            insertTeacher.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

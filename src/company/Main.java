@@ -44,16 +44,16 @@ public class Main {
                             int key2 = scanner.nextInt();
                             switch (key2) {
                                 case 1:
-                                    tableStudent.selectAllStudents();
+                                    tableStudent.selectAll();
                                     break;
                                 case 2:
-                                    tableTeacher.selectAllTeachers();
+                                    tableTeacher.selectAll();
                                     break;
                                 case 3:
-                                    tableSubject.selectAllSubjects();
+                                    tableSubject.selectAll();
                                     break;
                                 case 4:
-                                    tableStudentsSubjects.selectAllDiary();
+                                    tableStudentsSubjects.selectAll();
                                     break;
                                 case 5:
                                     tableAttendance.selectAll();
@@ -77,19 +77,19 @@ public class Main {
                             int key2 = scanner.nextInt();
                             switch (key2) {
                                 case 1:
-                                    tableStudent.insertStudents();
+                                    tableStudent.insertData();
                                     break;
                                 case 2:
-                                    tableTeacher.insertTeachers();
+                                    tableTeacher.insertData();
                                     break;
                                 case 3:
-                                    tableSubject.insertSubject(tableTeacher.getCount());
+                                    tableSubject.insertData();
                                     break;
                                 case 4:
-                                    tableStudentsSubjects.addStudentToSubject();
+                                    tableStudentsSubjects.insertData();
                                     break;
                                 case 5:
-                                    tableAttendance.insert();
+                                    tableAttendance.insertData();
                                     break;
                                 case 0:
                                     exit2 = false;
@@ -105,20 +105,24 @@ public class Main {
                         boolean exit3 = true;
                         do {
                             System.out.print("\nChoose the table which you want to see:\n");
-                            System.out.println("Students - press 1\nTeachers - press 2\nSubjects - press 3\nAttendance - press 4\nFor exit - press 0");
+                            System.out.println("Students - press 1\nTeachers - press 2\nSubjects - press 3\nStudent_subject - press\n" +
+                                    "Attendance - press 5\nFor exit - press 0");
                             int key2 = scanner.nextInt();
                             switch (key2) {
                                 case 1:
-                                    tableStudent.deleteStudent();
+                                    tableStudent.deleteRow();
                                     break;
                                 case 2:
-                                    tableTeacher.deleteTeacher();
+                                    tableTeacher.deleteRow();
                                     break;
                                 case 3:
-                                    tableSubject.deleteSubject();
+                                    tableSubject.deleteRow();
                                     break;
                                 case 4:
-                                    tableAttendance.deleteAttendance();
+                                    tableStudentsSubjects.deleteRow();
+                                    break;
+                                case 5:
+                                    tableAttendance.deleteRow();
                                     break;
                                 case 0:
                                     exit3 = false;
@@ -134,20 +138,24 @@ public class Main {
                         boolean exit4 = true;
                         do {
                             System.out.print("\nChoose the table which you want to see:\n");
-                            System.out.println("Students - press 1\nTeachers - press 2\nSubjects - press 3\nAttendance - press 4\nFor exit - press 0");
+                            System.out.println("Students - press 1\nTeachers - press 2\nSubjects - press 3\nStudent_Subject - press 4\n" +
+                                    "Attendance - press 5\nFor exit - press 0");
                             int key2 = scanner.nextInt();
                             switch (key2) {
                                 case 1:
-                                    tableStudent.updateStudent();
+                                    tableStudent.updateData();
                                     break;
                                 case 2:
-                                    tableTeacher.updateTeacher();
+                                    tableTeacher.updateData();
                                     break;
                                 case 3:
-                                    tableSubject.updateSubject();
+                                    tableSubject.updateData();
                                     break;
                                 case 4:
-                                    tableAttendance.updateStudent();
+                                    tableStudentsSubjects.updateData();
+                                    break;
+                                case 5:
+                                    tableAttendance.updateData();
                                     break;
                                 case 0:
                                     exit4 = false;
@@ -168,19 +176,19 @@ public class Main {
                             int key2 = scanner.nextInt();
                             switch (key2) {
                                 case 1:
-                                    tableStudent.dropStudents();
+                                    tableStudent.dropTable();
                                     break;
                                 case 2:
-                                    tableTeacher.dropTeachers();
+                                    tableTeacher.dropTable();
                                     break;
                                 case 3:
-                                    tableSubject.dropSubjects();
+                                    tableSubject.dropTable();
                                     break;
                                 case 4:
-                                    tableStudentsSubjects.dropStudents_Subjects();
+                                    tableStudentsSubjects.dropTable();
                                     break;
                                 case 5:
-                                    tableAttendance.drop();
+                                    tableAttendance.dropTable();
                                     break;
                                 case 0:
                                     exit5 = false;
@@ -196,20 +204,24 @@ public class Main {
                         boolean exit6 = true;
                         do {
                             System.out.print("\nChoose the table which you want to see:\n");
-                            System.out.println("Students - press 1\nTeachers - press 2\nSubjects - press 3\nStudent_Subject - press 4\nFor exit - press 0");
+                            System.out.println("Students - press 1\nTeachers - press 2\nSubjects - press 3\nStudent_Subject - press 4\n" +
+                                    "Attendance - press 5\nFor exit - press 0");
                             int key2 = scanner.nextInt();
                             switch (key2) {
                                 case 1:
-                                    tableStudent.selectName();
+                                    tableStudent.selectByName();
                                     break;
                                 case 2:
-                                    tableTeacher.selectName();
+                                    tableTeacher.selectByName();
                                     break;
                                 case 3:
-                                    tableSubject.selectName();
+                                    tableSubject.selectByName();
                                     break;
                                 case 4:
-                                    tableStudentsSubjects.selectName();
+                                    tableStudentsSubjects.selectByName();
+                                    break;
+                                case 5:
+                                    tableAttendance.selectByName();
                                     break;
                                 case 0:
                                     exit6 = false;
