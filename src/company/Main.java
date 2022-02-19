@@ -22,7 +22,7 @@ public class Main {
             SubjectRepository tableSubject = new SubjectRepository(connection);
             Student_SubjectRepository tableStudentsSubjects = new Student_SubjectRepository(connection);
             AttendenceRepository tableAttendance = new AttendenceRepository(connection);
-
+            MarksRepository tableMarks = new MarksRepository(connection);
             boolean exit = true;
             do {
                 System.out.println("\nIf you want to select all rows from table press '1'\n" +
@@ -31,6 +31,7 @@ public class Main {
                         "If you want to update data in the table press '4'\n" +
                         "If you want to drop table press '5'\n" +
                         "If you want to get information by id press '6'\n" +
+                        "If you want to get average mark by drop to subject press '7'\n" +
                         "For exit press '0'\n");
                 System.out.print("Enter the key: ");
                 int key = scanner.nextInt();
@@ -40,9 +41,9 @@ public class Main {
                         do {
                             System.out.print("\nChoose the table which you want to see:\n");
                             System.out.println("Students - press 1\nTeachers - press 2\nSubjects - press 3\nStudent_Subject - press 4\n" +
-                                    "Attendance - press 5\nFor exit - press 0");
-                            int key2 = scanner.nextInt();
-                            switch (key2) {
+                                    "Attendance - press 5\nMarks - press 6\nFor exit - press 0");
+                            int key1 = scanner.nextInt();
+                            switch (key1) {
                                 case 1:
                                     tableStudent.selectAll();
                                     break;
@@ -57,6 +58,9 @@ public class Main {
                                     break;
                                 case 5:
                                     tableAttendance.selectAll();
+                                    break;
+                                case 6:
+                                    tableMarks.selectAll();
                                     break;
                                 case 0:
                                     exit1 = false;
@@ -73,7 +77,7 @@ public class Main {
                         do {
                             System.out.print("\nChoose the table which you want to see:\n");
                             System.out.println("Students - press 1\nTeachers - press 2\nSubjects - press 3\nStudent_Subject - press 4\n" +
-                                    "Attendance - press 5\nFor exit - press 0");
+                                    "Attendance - press 5\nMarks - press 6\nFor exit - press 0");
                             int key2 = scanner.nextInt();
                             switch (key2) {
                                 case 1:
@@ -91,13 +95,15 @@ public class Main {
                                 case 5:
                                     tableAttendance.insertData();
                                     break;
+                                case 6:
+                                    tableMarks.insertData();
+                                    break;
                                 case 0:
                                     exit2 = false;
                                     break;
                                 default:
                                     System.out.println("The wrong instruction");
                                     break;
-
                             }
                         } while (exit2);
                         break;
@@ -106,9 +112,9 @@ public class Main {
                         do {
                             System.out.print("\nChoose the table which you want to see:\n");
                             System.out.println("Students - press 1\nTeachers - press 2\nSubjects - press 3\nStudent_subject - press\n" +
-                                    "Attendance - press 5\nFor exit - press 0");
-                            int key2 = scanner.nextInt();
-                            switch (key2) {
+                                    "Attendance - press 5\nMarks - press 6\nFor exit - press 0");
+                            int key4 = scanner.nextInt();
+                            switch (key4) {
                                 case 1:
                                     tableStudent.deleteRow();
                                     break;
@@ -123,6 +129,9 @@ public class Main {
                                     break;
                                 case 5:
                                     tableAttendance.deleteRow();
+                                    break;
+                                case 6:
+                                    tableMarks.deleteRow();
                                     break;
                                 case 0:
                                     exit3 = false;
@@ -139,9 +148,9 @@ public class Main {
                         do {
                             System.out.print("\nChoose the table which you want to see:\n");
                             System.out.println("Students - press 1\nTeachers - press 2\nSubjects - press 3\nStudent_Subject - press 4\n" +
-                                    "Attendance - press 5\nFor exit - press 0");
-                            int key2 = scanner.nextInt();
-                            switch (key2) {
+                                    "Attendance - press 5\nMarks - press 6\nFor exit - press 0");
+                            int key5 = scanner.nextInt();
+                            switch (key5) {
                                 case 1:
                                     tableStudent.updateData();
                                     break;
@@ -156,6 +165,9 @@ public class Main {
                                     break;
                                 case 5:
                                     tableAttendance.updateData();
+                                    break;
+                                case 6:
+                                    tableMarks.updateData();
                                     break;
                                 case 0:
                                     exit4 = false;
@@ -172,7 +184,7 @@ public class Main {
                         do {
                             System.out.print("\nChoose the table which you want to see:\n");
                             System.out.println("Students - press 1\nTeachers - press 2\nSubjects - press 3\nStudent_Subject - press 4\n" +
-                                    "Attendance - press 5\nFor exit - press 0");
+                                    "Attendance - press 5\nMarks - press 6\nFor exit - press 0");
                             int key2 = scanner.nextInt();
                             switch (key2) {
                                 case 1:
@@ -190,6 +202,9 @@ public class Main {
                                 case 5:
                                     tableAttendance.dropTable();
                                     break;
+                                case 6:
+                                    tableMarks.dropTable();
+                                    break;
                                 case 0:
                                     exit5 = false;
                                     break;
@@ -205,7 +220,7 @@ public class Main {
                         do {
                             System.out.print("\nChoose the table which you want to see:\n");
                             System.out.println("Students - press 1\nTeachers - press 2\nSubjects - press 3\nStudent_Subject - press 4\n" +
-                                    "Attendance - press 5\nFor exit - press 0");
+                                    "Attendance - press 5\nMarks - press 6\nFor exit - press 0");
                             int key2 = scanner.nextInt();
                             switch (key2) {
                                 case 1:
@@ -223,6 +238,9 @@ public class Main {
                                 case 5:
                                     tableAttendance.selectByName();
                                     break;
+                                case 6:
+                                    tableMarks.selectByName();
+                                    break;
                                 case 0:
                                     exit6 = false;
                                     break;
@@ -232,6 +250,35 @@ public class Main {
 
                             }
                         } while (exit6);
+                        break;
+                    case 7:
+                        boolean exit7 = true;
+                        do {
+                            System.out.print("\nChoose the average point which you want to see:\n");
+                            System.out.println("By all group - press 1\nBy student - press 2\nBy 1 subject to student - press 3\nFor exit - press 0");
+                            int key2 = scanner.nextInt();
+                            switch (key2) {
+                                case 1:
+                                    tableMarks.getAverageByGroup();
+                                    break;
+                                case 2:
+                                    tableStudent.getAverageByGroup();
+                                    break;
+                                case 3:
+                                    tableStudentsSubjects.getAverageByGroup();
+                                    break;
+                                case 0:
+                                    exit7 = false;
+                                    break;
+                                default:
+                                    System.out.println("The wrong instruction");
+                                    break;
+
+                            }
+                        } while (exit7);
+                        break;
+                    case 8:
+                        tableStudent.getAllMarks();
                         break;
                     case 0:
                         System.out.println("Exit. Good luck!");

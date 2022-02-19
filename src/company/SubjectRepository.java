@@ -2,12 +2,13 @@ package company;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class SubjectRepository implements Tables{
     static final Scanner scanner = new Scanner(System.in);
-    private Connection connection;
-    private ArrayList<Subject> listSubjects = new ArrayList<>();
+    private final Connection connection;
+    private static final HashMap<Integer, Subject> subjects = new HashMap<>();
 
     SubjectRepository (Connection connection) {
         this.connection = connection;
@@ -20,6 +21,7 @@ public class SubjectRepository implements Tables{
             ResultSet setTables = dbData.getTables(null, null, "subjects", null);
             if (setTables.next()) {
                 System.out.println("\nTable subjects has already exists!\n");
+                putToMap();
             } else {
                 System.out.println("\nCreating table subjects...\n");
                 String createTable = "CREATE TABlE IF NOT EXISTS subjects (" +
@@ -33,6 +35,10 @@ public class SubjectRepository implements Tables{
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    public static HashMap<Integer, Subject> getSubjects() {
+        return subjects;
     }
 
     public void alterTeachers() {
@@ -68,13 +74,9 @@ public class SubjectRepository implements Tables{
             while (joinSet.next()) {
                 System.out.println(joinSet.getString(1) + " " + joinSet.getString(2) + " " + joinSet.getString(3) + " " + joinSet.getString(4));
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    }
-
-    public ArrayList<Subject> getListSubjects() {
-        return listSubjects;
     }
 
     @Override
@@ -83,6 +85,7 @@ public class SubjectRepository implements Tables{
         System.out.println("\nDeleting table subjects...\n");
         try (Statement statement = connection.createStatement()) {
             statement.execute(drop);
+            subjects.clear();
             System.out.println("\nDeleting was successful!\n");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -92,16 +95,23 @@ public class SubjectRepository implements Tables{
     @Override
     public void insertData() {
         Subject subject = new Subject();
+        String getId = "SELECT LAST_INSERT_ID()";
         System.out.print("Please, enter the teachers id: ");
         int teacherId  = scanner.nextInt();
         System.out.print("Please, enter the subject`s name: ");
         String nameSubject = scanner.next();
         String insert = "INSERT INTO subjects (name, teacher) VALUES (?, (SELECT id FROM teachers WHERE id = " + teacherId + "))";
         subject.setName(nameSubject);
-        listSubjects.add(subject);
-        try (PreparedStatement insertTeacher = this.connection.prepareStatement(insert)) {
+        subject.setTeacher(teacherId);
+     try (PreparedStatement insertTeacher = this.connection.prepareStatement(insert);
+             Statement getIdStatement = this.connection.createStatement()) {
             insertTeacher.setString(1, subject.getName());
             insertTeacher.executeUpdate();
+            ResultSet lastId = getIdStatement.executeQuery(getId);
+            while (lastId.next()) {
+                subject.setId(lastId.getInt(1));
+            }
+            subjects.put(subject.getId(), subject);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -116,6 +126,8 @@ public class SubjectRepository implements Tables{
         String update = "UPDATE subjects SET name = '" + subjectName + "' WHERE id = " + subjectId;
         try(PreparedStatement statement = this.connection.prepareStatement(update)) {
             statement.executeUpdate();
+            Subject subject = subjects.get(subjectId);
+            subject.setName(subjectName);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -142,6 +154,7 @@ public class SubjectRepository implements Tables{
         String delete = "DELETE FROM subjects WHERE id = " + subjectId;
         try(PreparedStatement statement = this.connection.prepareStatement(delete)) {
             statement.executeUpdate();
+            subjects.remove(subjectId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -157,8 +170,24 @@ public class SubjectRepository implements Tables{
             while (set.next()) {
                 System.out.println(set.getString(1));
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+    }
+
+    public void putToMap() {
+        try (Statement statement = connection.createStatement();
+             ResultSet selectAll = statement.executeQuery("SELECT * FROM subjects")) {
+            while (selectAll.next()) {
+                Subject subject = new Subject(selectAll.getInt(1), selectAll.getString(2), selectAll.getInt(3));
+                subjects.put(subject.getId(), subject);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void printMap() {
+        subjects.values().forEach(entry -> System.out.println(entry.getId() + " " + entry.getName() + " " + entry.getTeacher()));
     }
 }

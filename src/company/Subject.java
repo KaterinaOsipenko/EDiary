@@ -1,8 +1,19 @@
 package company;
 
 public class Subject {
-    private Teacher teacher;
+    private Integer id;
+    private int teacherId;
     private String name;
+
+    Subject() {
+
+    }
+
+    Subject(Integer id, String name, int teacher) {
+        this.id = id;
+        this.name = name;
+        this.teacherId = teacher;
+    }
 
     public String getName() {
         return name;
@@ -12,11 +23,19 @@ public class Subject {
         this.name = name;
     }
 
-    public Teacher getTeacher() {
-        return teacher;
+    public int getTeacher() {
+        return teacherId;
     }
 
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
+    public void setTeacher(int teacher) {
+        this.teacherId = teacher;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

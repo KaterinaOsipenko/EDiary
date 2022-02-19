@@ -21,9 +21,10 @@ public class Student_SubjectRepository implements Tables{
             } else {
                 System.out.println("\nCreating table student_subject...\n");
                 String createTable = "CREATE TABlE IF NOT EXISTS student_subject (" +
-                        "id int(6) PRIMARY KEY AUTO_INCREMENT," +
-                        "student_id int(6)  NOT NULL," +
-                        "subject_id int(6)  NOT NULL)";
+                        "id int(6) UNIQUE AUTO_INCREMENT," +
+                        "student_id int(6) NOT NULL," +
+                        "subject_id int(6) NOT NULL," +
+                        "PRIMARY KEY (student_id, subject_id))";
                 statement.executeUpdate(createTable);
                 System.out.println("\nTable student_subject was created!\n");
                 alterAdd();
@@ -40,8 +41,8 @@ public class Student_SubjectRepository implements Tables{
             PreparedStatement statement1 = this.connection.prepareStatement(addUpdate)) {
             statement.executeUpdate();
             statement1.executeUpdate();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -60,10 +61,13 @@ public class Student_SubjectRepository implements Tables{
 
     private void removeConstraint() {
         String removeAttendance = "ALTER TABLE attendance DROP CONSTRAINT student_subject_fk";
-        try(PreparedStatement statement = this.connection.prepareStatement(removeAttendance)) {
+        String removeMarks = "ALTER TABLE marks DROP CONSTRAINT marks_fk";
+        try(PreparedStatement statement = this.connection.prepareStatement(removeAttendance);
+            PreparedStatement statement1 = this.connection.prepareStatement(removeMarks)) {
             statement.executeUpdate();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            statement1.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -150,6 +154,22 @@ public class Student_SubjectRepository implements Tables{
             ResultSet set = statement.executeQuery(selectName)) {
             while (set.next()) {
                 System.out.println(set.getString(1) + " " + set.getString(2) + " " + set.getString(3));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getAverageByGroup() {
+        System.out.print("Enter the subject`s id: ");
+        int subjectId = scanner.nextInt();
+        String average = "SELECT AVG(mark) FROM marks, student_subject, students, subjects WHERE " +
+                "marks.student_subject_id = student_subject.id AND student_subject.subject_id = subjects.id" +
+                " AND marks.student_subject_id =" + subjectId;
+        try(Statement statement = this.connection.createStatement()) {
+            ResultSet avg = statement.executeQuery(average);
+            while (avg.next()) {
+                System.out.println(avg.getDouble(1));
             }
         } catch (SQLException e) {
             e.printStackTrace();

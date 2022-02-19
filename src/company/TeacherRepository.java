@@ -2,12 +2,13 @@ package company;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class TeacherRepository implements Tables{
     static final Scanner scanner = new Scanner(System.in);
-    private ArrayList<Teacher> listTeachers = new ArrayList<>();
-    private Connection connection;
+    private final Connection connection;
+    private final HashMap<Integer, Teacher> teachers = new HashMap<>();
 
     TeacherRepository (Connection connection) {
         this.connection = connection;
@@ -20,6 +21,7 @@ public class TeacherRepository implements Tables{
             ResultSet setTables = dbData.getTables(null, null, "teachers", null);
             if (setTables.next()) {
                 System.out.println("\nTable teachers has already exists!\n");
+                putToMap();
             } else {
                 System.out.println("\nCreating table teachers...\n");
                 String createTable = "CREATE TABlE IF NOT EXISTS teachers (" +
@@ -72,10 +74,6 @@ public class TeacherRepository implements Tables{
         }
     }
 
-    public ArrayList<Teacher> getListTeachers() {
-        return listTeachers;
-    }
-
     @Override
     public void dropTable() {
         removeAdd();
@@ -83,6 +81,7 @@ public class TeacherRepository implements Tables{
         System.out.println("\nDeleting table teachers...\n");
         try (Statement statement = connection.createStatement()) {
             statement.execute(drop);
+            this.teachers.clear();
             System.out.println("\nDeleting was successful!\n");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -92,17 +91,22 @@ public class TeacherRepository implements Tables{
     @Override
     public void insertData() {
         String insert = "INSERT INTO teachers (first_name, last_name) VALUES (?, ?)";
+        String getId = "SELECT LAST_INSERT_ID()";
         System.out.print("Please, enter the teacher`s first name: ");
         String nameTeacher = scanner.next();
         System.out.print("Please, enter the teacher`s last name: ");
         String lastNameTeacher = scanner.next();
         Teacher teacher = new Teacher(nameTeacher, lastNameTeacher);
-        listTeachers.add(teacher);
-
-        try (PreparedStatement insertTeacher = this.connection.prepareStatement(insert)) {
+        try (PreparedStatement insertTeacher = this.connection.prepareStatement(insert);
+             Statement getIdStatement = this.connection.createStatement()) {
             insertTeacher.setString(1, teacher.getName());
             insertTeacher.setString(2, teacher.getSurname());
             insertTeacher.executeUpdate();
+            ResultSet lastId = getIdStatement.executeQuery(getId);
+            while (lastId.next()) {
+                teacher.setId(lastId.getInt(1));
+            }
+            teachers.put(teacher.getId(), teacher);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -116,10 +120,12 @@ public class TeacherRepository implements Tables{
         String name = scanner.next();
         System.out.print("Enter the new value of last name: ");
         String surname = scanner.next();
-        String update = "UPDATE students SET first_name = '" + name +  "' last_name = '" + surname + "' WHERE id = " + teacherId;
-        System.out.println(update);
+        String update = "UPDATE teachers SET first_name = '" + name +  "' ,last_name = '" + surname + "' WHERE id = " + teacherId;
         try(PreparedStatement statement = this.connection.prepareStatement(update)) {
             statement.executeUpdate();
+            Teacher teacher = this.teachers.get(teacherId);
+            teacher.setName(name);
+            teacher.setSurname(surname);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -146,6 +152,7 @@ public class TeacherRepository implements Tables{
         String delete = "DELETE FROM teachers WHERE id = " + teacherId;
         try(PreparedStatement statement = this.connection.prepareStatement(delete)) {
             statement.executeUpdate();
+            this.teachers.remove(teacherId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -164,5 +171,21 @@ public class TeacherRepository implements Tables{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void putToMap() {
+        try (Statement statement = connection.createStatement();
+             ResultSet selectAll = statement.executeQuery("SELECT * FROM teachers")) {
+            while (selectAll.next()) {
+                Teacher teacher = new Teacher(selectAll.getInt(1), selectAll.getString(2), selectAll.getString(3));
+                this.teachers.put(teacher.getId(), teacher);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void printMap() {
+        this.teachers.values().forEach(entry -> System.out.println(entry.getId() + " " + entry.getName() + " " + entry.getSurname()));
     }
 }

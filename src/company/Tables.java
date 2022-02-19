@@ -2,15 +2,15 @@ package company;
 
 public interface Tables {
 
-    public void dropTable();
+    void dropTable();
 
-    public void insertData();
+    void insertData();
 
-    public void updateData();
+    void updateData();
 
-    public void selectAll();
+    void selectAll();
 
-    public void deleteRow();
+    void deleteRow();
 
-    public void selectByName();
+    void selectByName();
 }

@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class AttendenceRepository implements Tables {
     static final Scanner scanner = new Scanner(System.in);
-    private Connection connection;
+    private final Connection connection;
 
     AttendenceRepository(Connection connection) {
         this.connection = connection;
@@ -21,6 +21,7 @@ public class AttendenceRepository implements Tables {
             } else {
                 System.out.println("\nCreating table attendance...\n");
                 String createTable = "CREATE TABlE IF NOT EXISTS attendance (" +
+                        "id int(3) PRIMARY KEY AUTO_INCREMENT," +
                         "student_subject_id int(6)," +
                         "Monday varchar(3) DEFAULT '   ', " +
                         "Tuesday varchar(3) DEFAULT '   ', " +
