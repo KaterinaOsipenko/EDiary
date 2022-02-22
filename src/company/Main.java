@@ -17,8 +17,7 @@ public class Main {
         DBManager db = new DBManager(url, user, password);
         db.getMetaData();
 
-        try {
-            Connection connection = DriverManager.getConnection(url2, user, password);
+        try (Connection connection = DriverManager.getConnection(url2, user, password)){
             StudentRepository tableStudent = new StudentRepository(connection);
             TeacherRepository tableTeacher = new TeacherRepository(connection);
             SubjectRepository tableSubject = new SubjectRepository(connection);
@@ -195,18 +194,37 @@ public class Main {
                         boolean exit7 = true;
                         do {
                             System.out.print("\nChoose the average point which you want to see:\n");
-                            System.out.println("By all group - press 1\nBy student - press 2\nBy 1 subject to student - press 3\nFor exit - press 0");
+                            System.out.println("""
+                                    By all group - press 1
+                                    By student - press 2
+                                    By 1 subject to student - press 3
+                                    For exit - press 0""");
                             int key2 = scanner.nextInt();
                             switch (key2) {
                                 case 1 -> tableMarks.getAverageByGroup();
-                                case 2 -> tableStudent.getAverageByGroup();
+                                case 2 -> tableStudent.getAverageByStudent();
                                 case 3 -> tableStudentsSubjects.getAverageByGroup();
                                 case 0 -> exit7 = false;
                                 default -> System.out.println("The wrong instruction");
                             }
                         } while (exit7);
                     }
-                    case 8 -> tableStudent.getAllMarks();
+                    case 8 -> {
+                        boolean exit8 = true;
+                        do {
+                            System.out.print("\nChoose the average point which you want to see:\n");
+                            System.out.println("""
+                                    By student - press 1
+                                    By subject - press 2
+                                    For exit - press 0""");
+                            int key2 = scanner.nextInt();
+                            switch (key2) {
+                                case 1 -> tableStudent.getMarksByStudent();
+                                case 2 -> tableSubject.getMarksBySubject();
+                                default -> exit8 = false;
+                            }
+                        } while (exit8);
+                    }
                     case 0 -> {
                         System.out.println("Exit. Good luck!");
                         exit = false;
@@ -219,3 +237,4 @@ public class Main {
         }
     }
 }
+

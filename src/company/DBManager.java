@@ -62,6 +62,7 @@ public class DBManager {
         return this.connection;
     }
 
+
     public void connect() {
         try {
             Class.forName("com.mysql.jdbc.Driver");

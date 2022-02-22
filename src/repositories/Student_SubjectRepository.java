@@ -122,7 +122,7 @@ public class Student_SubjectRepository implements Tables {
         System.out.println("--------------------------------------");
         try (Statement statement = this.connection.createStatement();
              ResultSet selectAll = statement.executeQuery("SELECT student_subject.id, students.id, students.first_name, " +
-                     "students.last_name, subjects.id, subjects.name  FROM student_subject, " +
+                     "students.last_name, subjects.id, subjects.name FROM student_subject, " +
                      " students, subjects WHERE student_subject.student_id = students.id " +
                      "AND student_subject.subject_id = subjects.id")) {
             while (selectAll.next()) {

@@ -4,6 +4,7 @@ import pojo.*;
 
 import java.sql.*;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class SubjectRepository implements Tables {
@@ -184,6 +185,13 @@ public class SubjectRepository implements Tables {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void getMarksBySubject() {
+        System.out.print("Enter the id of subject: ");
+        int idSubject = scanner.nextInt();
+        Subject subject = subjects.get(idSubject);
+        subject.printMarks();
     }
 
     public void printMap() {

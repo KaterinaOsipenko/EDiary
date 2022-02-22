@@ -2,6 +2,7 @@ package repositories;
 
 import pojo.Mark;
 import pojo.Student;
+import pojo.Subject;
 import pojo.Tables;
 
 import java.sql.*;
@@ -154,7 +155,7 @@ public class StudentRepository implements Tables {
         }
     }
 
-    public void getAverageByGroup() {
+    public void getAverageByStudent() {
         System.out.print("Enter the subject`s id: ");
         int studentId = scanner.nextInt();
         String average = "SELECT AVG(mark) FROM marks, student_subject, students, subjects WHERE " +
@@ -186,14 +187,13 @@ public class StudentRepository implements Tables {
         students.values().forEach(entry -> System.out.println(entry.getId() + " " + entry.getName() + " " + entry.getSurname()));
     }
 
-    public void getMarks() {
+    public void getMarksByStudent() {
         System.out.println("Enter the id of students: ");
-        int id = scanner.nextInt();
-        Student student = students.get(id);
-        for (Map.Entry<Integer, Mark> entry : student.getMarks().entrySet()) {
-            System.out.println(entry.getKey() + " " + entry.getValue().toString());
-        }
-        System.out.println(student.getMarks().size());
+        int idStudent = scanner.nextInt();
+        Student student = students.get(idStudent);
+        System.out.println("Enter the id of subject: ");
+        int idSubject = scanner.nextInt();
+        student.getMarksBySubject(idSubject);
     }
 
     public void getAllMarks() {

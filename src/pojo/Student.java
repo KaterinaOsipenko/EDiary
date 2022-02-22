@@ -50,4 +50,22 @@ public class Student extends Person {
         Student student = StudentRepository.getStudents().get(this.getId());
         student.getMarks().replace(studentSubjectId, old, newVal);
     }
+
+    public HashMap<Integer, Mark> getMarksBySubject(int idSubject) {
+        HashMap<Integer, Mark> marksBySubject= new HashMap<>();
+        if (this.marks.containsKey(idSubject)) {
+            marksBySubject.putAll(this.marks);
+            for (Integer key : marksBySubject.keySet()) {
+                if (key != idSubject) {
+                    marksBySubject.remove(key);
+                }
+            }
+        } else {
+            System.out.println("This student hasn`t marks in this subject.");
+        }
+        for (Map.Entry<Integer, Mark> entry : marksBySubject.entrySet()) {
+            System.out.println(this.getName() + " " + this.getSurname() + " " + entry.getKey() + " " + entry.getValue().getValue() + " " + entry.getValue().getDate() + " " + entry.getValue().getNotice());
+        }
+        return marksBySubject;
+    }
 }

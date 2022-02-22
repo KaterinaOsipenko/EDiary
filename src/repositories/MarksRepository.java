@@ -50,7 +50,11 @@ public class MarksRepository implements Tables {
              ResultSet selectAll = statement.executeQuery("SELECT student_subject_id, mark, date, notice FROM marks")) {
             while (selectAll.next()) {
                 Student student = getStudent(selectAll.getInt(1));
-                student.addMark(getSubject(selectAll.getInt(1)).getId(), selectAll.getInt(2), selectAll.getDate(3), selectAll.getString(4));
+                student.addMark(getSubject(selectAll.getInt(1)).getId(), selectAll.getInt(2),
+                        selectAll.getDate(3), selectAll.getString(4));
+                Subject subject = getSubject(selectAll.getInt(1));
+                subject.addMark(getStudent(selectAll.getInt(1)).getId(), selectAll.getInt(2),
+                        selectAll.getDate(3), selectAll.getString(4));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -97,6 +101,7 @@ public class MarksRepository implements Tables {
             insertMark.setString(4, notice);
             insertMark.executeUpdate();
             getStudent(studentSubjectId).addMark(getSubject(studentSubjectId).getId(), value, sqlDate, notice);
+            getSubject(studentSubjectId).addMark(getStudent(studentSubjectId).getId(), value, sqlDate, notice);
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
@@ -141,13 +146,13 @@ public class MarksRepository implements Tables {
         System.out.print("Enter the new value of mark: ");
         int mark = scanner.nextInt();
         int studentSubjectId = getStudents_SubjectId(markId);
-        Student student = getStudent(studentSubjectId);
         Mark oldVal = getMark(markId);
         Mark newVal = new Mark(mark, oldVal.getDate(), oldVal.getNotice());
         String update = "UPDATE marks SET mark = '" + mark +  "' WHERE mark_id = " + markId;
         try(PreparedStatement statement = this.connection.prepareStatement(update)) {
             statement.executeUpdate();
-            student.updateMark(getSubject(studentSubjectId).getId(), oldVal, newVal);
+            getStudent(studentSubjectId).updateMark(getSubject(studentSubjectId).getId(), oldVal, newVal);
+            getSubject(studentSubjectId).updateMark(getStudent(studentSubjectId).getId(), oldVal, newVal);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -178,8 +183,8 @@ public class MarksRepository implements Tables {
         try(Statement statement = this.connection.createStatement()) {
             statement.execute(delete);
             int studentSubjectId = getStudents_SubjectId(markId);
-            Student student = getStudent(studentSubjectId);
-            student.deleteMark(getSubject(studentSubjectId).getId(), getMark(markId));
+            getStudent(studentSubjectId).deleteMark(getSubject(studentSubjectId).getId(), getMark(markId));
+            getSubject(studentSubjectId).deleteMark(getStudent(studentSubjectId).getId(), getMark(markId));
         } catch (SQLException e) {
             e.printStackTrace();
         }
