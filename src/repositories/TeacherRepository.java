@@ -1,16 +1,18 @@
-package company;
+package repositories;
+
+import pojo.Tables;
+import pojo.Teacher;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class TeacherRepository implements Tables{
+public class TeacherRepository implements Tables {
     static final Scanner scanner = new Scanner(System.in);
     private final Connection connection;
     private final HashMap<Integer, Teacher> teachers = new HashMap<>();
 
-    TeacherRepository (Connection connection) {
+    public TeacherRepository (Connection connection) {
         this.connection = connection;
         createTable();
     }
@@ -67,8 +69,8 @@ public class TeacherRepository implements Tables{
 
     public void removeAdd() {
         String addStudent = "ALTER TABLE subjects DROP CONSTRAINT teacher_fk";
-        try(PreparedStatement statement = this.connection.prepareStatement(addStudent)) {
-            statement.executeUpdate();
+        try(Statement statement = this.connection.createStatement()) {
+            statement.execute(addStudent);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -121,8 +123,8 @@ public class TeacherRepository implements Tables{
         System.out.print("Enter the new value of last name: ");
         String surname = scanner.next();
         String update = "UPDATE teachers SET first_name = '" + name +  "' ,last_name = '" + surname + "' WHERE id = " + teacherId;
-        try(PreparedStatement statement = this.connection.prepareStatement(update)) {
-            statement.executeUpdate();
+        try(Statement statement = this.connection.createStatement()) {
+            statement.execute(update);
             Teacher teacher = this.teachers.get(teacherId);
             teacher.setName(name);
             teacher.setSurname(surname);
@@ -150,8 +152,8 @@ public class TeacherRepository implements Tables{
         System.out.print("Enter the teacher`s id who you want to delete from tables: ");
         int teacherId = scanner.nextInt();
         String delete = "DELETE FROM teachers WHERE id = " + teacherId;
-        try(PreparedStatement statement = this.connection.prepareStatement(delete)) {
-            statement.executeUpdate();
+        try(Statement statement = this.connection.createStatement()) {
+            statement.execute(delete);
             this.teachers.remove(teacherId);
         } catch (SQLException e) {
             e.printStackTrace();

@@ -1,4 +1,6 @@
-package company;
+package repositories;
+
+import pojo.Tables;
 
 import java.sql.*;
 import java.util.Scanner;
@@ -7,7 +9,7 @@ public class AttendenceRepository implements Tables {
     static final Scanner scanner = new Scanner(System.in);
     private final Connection connection;
 
-    AttendenceRepository(Connection connection) {
+    public AttendenceRepository(Connection connection) {
         this.connection = connection;
         createTable();
     }
@@ -39,8 +41,8 @@ public class AttendenceRepository implements Tables {
 
     public void alterAttendance() {
         String alterStudent_Subject = "ALTER TABLE attendance ADD CONSTRAINT student_subject_fk FOREIGN KEY (student_subject_id) REFERENCES student_subject(id) ON UPDATE CASCADE";
-        try(PreparedStatement statement = this.connection.prepareStatement(alterStudent_Subject)) {
-            statement.executeUpdate();
+        try(Statement statement = this.connection.createStatement()) {
+            statement.execute(alterStudent_Subject);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -65,8 +67,8 @@ public class AttendenceRepository implements Tables {
         System.out.print("Enter the day of week: ");
         String dayOfWeek = scanner.next();
         String insert = "INSERT INTO attendance (student_subject_id, " + dayOfWeek + ") VALUES (" + id + ", 'abs')";
-        try (PreparedStatement insertTeacher = this.connection.prepareStatement(insert)) {
-            insertTeacher.executeUpdate();
+        try (Statement insertTeacher = this.connection.createStatement()) {
+            insertTeacher.execute(insert);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -81,8 +83,8 @@ public class AttendenceRepository implements Tables {
         System.out.print("Enter the new value of status: ");
         String status = scanner.next();
         String update = "UPDATE attendance SET " + day + " = '" + status +  "' WHERE student_subject_id = " + studentId;
-        try(PreparedStatement statement = this.connection.prepareStatement(update)) {
-            statement.executeUpdate();
+        try(Statement statement = this.connection.createStatement()) {
+            statement.execute(update);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -109,8 +111,8 @@ public class AttendenceRepository implements Tables {
         System.out.print("Enter id of students_subjects that you want to delete from tables: ");
         int id = scanner.nextInt();
         String delete = "DELETE FROM attendance WHERE student_subject_id = " + id;
-        try(PreparedStatement statement = this.connection.prepareStatement(delete)) {
-            statement.executeUpdate();
+        try(Statement statement = this.connection.createStatement()) {
+            statement.execute(delete);
         } catch (SQLException e) {
             e.printStackTrace();
         }

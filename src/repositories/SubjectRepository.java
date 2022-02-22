@@ -1,16 +1,17 @@
-package company;
+package repositories;
+
+import pojo.*;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class SubjectRepository implements Tables{
+public class SubjectRepository implements Tables {
     static final Scanner scanner = new Scanner(System.in);
     private final Connection connection;
     private static final HashMap<Integer, Subject> subjects = new HashMap<>();
 
-    SubjectRepository (Connection connection) {
+   public SubjectRepository (Connection connection) {
         this.connection = connection;
         createTable();
     }
@@ -43,8 +44,8 @@ public class SubjectRepository implements Tables{
 
     public void alterTeachers() {
         String alert = "ALTER TABLE subjects ADD CONSTRAINT teacher_fk FOREIGN KEY (teacher) REFERENCES teachers(id) ON DELETE CASCADE";
-        try(PreparedStatement statement = this.connection.prepareStatement(alert)) {
-            statement.executeUpdate();
+        try(Statement statement = this.connection.createStatement()) {
+            statement.execute(alert);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -94,15 +95,13 @@ public class SubjectRepository implements Tables{
 
     @Override
     public void insertData() {
-        Subject subject = new Subject();
         String getId = "SELECT LAST_INSERT_ID()";
         System.out.print("Please, enter the teachers id: ");
         int teacherId  = scanner.nextInt();
         System.out.print("Please, enter the subject`s name: ");
         String nameSubject = scanner.next();
         String insert = "INSERT INTO subjects (name, teacher) VALUES (?, (SELECT id FROM teachers WHERE id = " + teacherId + "))";
-        subject.setName(nameSubject);
-        subject.setTeacher(teacherId);
+        Subject subject = new Subject(nameSubject, teacherId);
      try (PreparedStatement insertTeacher = this.connection.prepareStatement(insert);
              Statement getIdStatement = this.connection.createStatement()) {
             insertTeacher.setString(1, subject.getName());
@@ -124,8 +123,8 @@ public class SubjectRepository implements Tables{
         System.out.print("Enter the new value of the subject`s name: ");
         String subjectName = scanner.next();
         String update = "UPDATE subjects SET name = '" + subjectName + "' WHERE id = " + subjectId;
-        try(PreparedStatement statement = this.connection.prepareStatement(update)) {
-            statement.executeUpdate();
+        try(Statement statement = this.connection.createStatement()) {
+            statement.execute(update);
             Subject subject = subjects.get(subjectId);
             subject.setName(subjectName);
         } catch (SQLException e) {
@@ -152,8 +151,8 @@ public class SubjectRepository implements Tables{
         System.out.print("Enter subject`s id that you want to delete from tables: ");
         int subjectId = scanner.nextInt();
         String delete = "DELETE FROM subjects WHERE id = " + subjectId;
-        try(PreparedStatement statement = this.connection.prepareStatement(delete)) {
-            statement.executeUpdate();
+        try(Statement statement = this.connection.createStatement()) {
+            statement.execute(delete);
             subjects.remove(subjectId);
         } catch (SQLException e) {
             e.printStackTrace();

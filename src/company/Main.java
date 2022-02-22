@@ -1,5 +1,7 @@
 package company;
 
+import repositories.*;
+
 import java.sql.*;
 import java.util.Scanner;
 
@@ -25,268 +27,191 @@ public class Main {
             MarksRepository tableMarks = new MarksRepository(connection);
             boolean exit = true;
             do {
-                System.out.println("\nIf you want to select all rows from table press '1'\n" +
-                        "If you want to insert data in the table press '2'\n" +
-                        "If you want to delete row in the table press '3'\n" +
-                        "If you want to update data in the table press '4'\n" +
-                        "If you want to drop table press '5'\n" +
-                        "If you want to get information by id press '6'\n" +
-                        "If you want to get average mark by drop to subject press '7'\n" +
-                        "For exit press '0'\n");
+                System.out.println("""
+
+                        If you want to select all rows from table press '1'
+                        If you want to insert data in the table press '2'
+                        If you want to delete row in the table press '3'
+                        If you want to update data in the table press '4'
+                        If you want to drop table press '5'
+                        If you want to get information by id press '6'
+                        If you want to get average mark by drop to subject press '7'
+                        For exit press '0'
+                        """);
                 System.out.print("Enter the key: ");
                 int key = scanner.nextInt();
                 switch (key) {
-                    case 1:
+                    case 1 -> {
                         boolean exit1 = true;
                         do {
                             System.out.print("\nChoose the table which you want to see:\n");
-                            System.out.println("Students - press 1\nTeachers - press 2\nSubjects - press 3\nStudent_Subject - press 4\n" +
-                                    "Attendance - press 5\nMarks - press 6\nFor exit - press 0");
+                            System.out.println("""
+                                    Students - press 1
+                                    Teachers - press 2
+                                    Subjects - press 3
+                                    Student_Subject - press 4
+                                    Attendance - press 5
+                                    Marks - press 6
+                                    For exit - press 0""");
                             int key1 = scanner.nextInt();
                             switch (key1) {
-                                case 1:
-                                    tableStudent.selectAll();
-                                    break;
-                                case 2:
-                                    tableTeacher.selectAll();
-                                    break;
-                                case 3:
-                                    tableSubject.selectAll();
-                                    break;
-                                case 4:
-                                    tableStudentsSubjects.selectAll();
-                                    break;
-                                case 5:
-                                    tableAttendance.selectAll();
-                                    break;
-                                case 6:
-                                    tableMarks.selectAll();
-                                    break;
-                                case 0:
-                                    exit1 = false;
-                                    break;
-                                default:
-                                    System.out.println("The wrong instruction");
-                                    break;
-
+                                case 1 -> tableStudent.selectAll();
+                                case 2 -> tableTeacher.selectAll();
+                                case 3 -> tableSubject.selectAll();
+                                case 4 -> tableStudentsSubjects.selectAll();
+                                case 5 -> tableAttendance.selectAll();
+                                case 6 -> tableMarks.selectAll();
+                                case 0 -> exit1 = false;
+                                default -> System.out.println("The wrong instruction");
                             }
                         } while (exit1);
-                        break;
-                    case 2:
+                    }
+                    case 2 -> {
                         boolean exit2 = true;
                         do {
                             System.out.print("\nChoose the table which you want to see:\n");
-                            System.out.println("Students - press 1\nTeachers - press 2\nSubjects - press 3\nStudent_Subject - press 4\n" +
-                                    "Attendance - press 5\nMarks - press 6\nFor exit - press 0");
+                            System.out.println("""
+                                    Students - press 1
+                                    Teachers - press 2
+                                    Subjects - press 3
+                                    Student_Subject - press 4
+                                    Attendance - press 5
+                                    Marks - press 6
+                                    For exit - press 0""");
                             int key2 = scanner.nextInt();
                             switch (key2) {
-                                case 1:
-                                    tableStudent.insertData();
-                                    break;
-                                case 2:
-                                    tableTeacher.insertData();
-                                    break;
-                                case 3:
-                                    tableSubject.insertData();
-                                    break;
-                                case 4:
-                                    tableStudentsSubjects.insertData();
-                                    break;
-                                case 5:
-                                    tableAttendance.insertData();
-                                    break;
-                                case 6:
-                                    tableMarks.insertData();
-                                    break;
-                                case 0:
-                                    exit2 = false;
-                                    break;
-                                default:
-                                    System.out.println("The wrong instruction");
-                                    break;
+                                case 1 -> tableStudent.insertData();
+                                case 2 -> tableTeacher.insertData();
+                                case 3 -> tableSubject.insertData();
+                                case 4 -> tableStudentsSubjects.insertData();
+                                case 5 -> tableAttendance.insertData();
+                                case 6 -> tableMarks.insertData();
+                                case 0 -> exit2 = false;
+                                default -> System.out.println("The wrong instruction");
                             }
                         } while (exit2);
-                        break;
-                    case 3:
+                    }
+                    case 3 -> {
                         boolean exit3 = true;
                         do {
                             System.out.print("\nChoose the table which you want to see:\n");
-                            System.out.println("Students - press 1\nTeachers - press 2\nSubjects - press 3\nStudent_subject - press\n" +
-                                    "Attendance - press 5\nMarks - press 6\nFor exit - press 0");
+                            System.out.println("""
+                                    Students - press 1
+                                    Teachers - press 2
+                                    Subjects - press 3
+                                    Student_subject - press
+                                    Attendance - press 5
+                                    Marks - press 6
+                                    For exit - press 0""");
                             int key4 = scanner.nextInt();
                             switch (key4) {
-                                case 1:
-                                    tableStudent.deleteRow();
-                                    break;
-                                case 2:
-                                    tableTeacher.deleteRow();
-                                    break;
-                                case 3:
-                                    tableSubject.deleteRow();
-                                    break;
-                                case 4:
-                                    tableStudentsSubjects.deleteRow();
-                                    break;
-                                case 5:
-                                    tableAttendance.deleteRow();
-                                    break;
-                                case 6:
-                                    tableMarks.deleteRow();
-                                    break;
-                                case 0:
-                                    exit3 = false;
-                                    break;
-                                default:
-                                    System.out.println("The wrong instruction");
-                                    break;
-
+                                case 1 -> tableStudent.deleteRow();
+                                case 2 -> tableTeacher.deleteRow();
+                                case 3 -> tableSubject.deleteRow();
+                                case 4 -> tableStudentsSubjects.deleteRow();
+                                case 5 -> tableAttendance.deleteRow();
+                                case 6 -> tableMarks.deleteRow();
+                                case 0 -> exit3 = false;
+                                default -> System.out.println("The wrong instruction");
                             }
                         } while (exit3);
-                        break;
-                    case 4:
+                    }
+                    case 4 -> {
                         boolean exit4 = true;
                         do {
                             System.out.print("\nChoose the table which you want to see:\n");
-                            System.out.println("Students - press 1\nTeachers - press 2\nSubjects - press 3\nStudent_Subject - press 4\n" +
-                                    "Attendance - press 5\nMarks - press 6\nFor exit - press 0");
+                            System.out.println("""
+                                    Students - press 1
+                                    Teachers - press 2
+                                    Subjects - press 3
+                                    Student_Subject - press 4
+                                    Attendance - press 5
+                                    Marks - press 6
+                                    For exit - press 0""");
                             int key5 = scanner.nextInt();
                             switch (key5) {
-                                case 1:
-                                    tableStudent.updateData();
-                                    break;
-                                case 2:
-                                    tableTeacher.updateData();
-                                    break;
-                                case 3:
-                                    tableSubject.updateData();
-                                    break;
-                                case 4:
-                                    tableStudentsSubjects.updateData();
-                                    break;
-                                case 5:
-                                    tableAttendance.updateData();
-                                    break;
-                                case 6:
-                                    tableMarks.updateData();
-                                    break;
-                                case 0:
-                                    exit4 = false;
-                                    break;
-                                default:
-                                    System.out.println("The wrong instruction");
-                                    break;
-
+                                case 1 -> tableStudent.updateData();
+                                case 2 -> tableTeacher.updateData();
+                                case 3 -> tableSubject.updateData();
+                                case 4 -> tableStudentsSubjects.updateData();
+                                case 5 -> tableAttendance.updateData();
+                                case 6 -> tableMarks.updateData();
+                                case 0 -> exit4 = false;
+                                default -> System.out.println("The wrong instruction");
                             }
                         } while (exit4);
-                        break;
-                    case 5:
+                    }
+                    case 5 -> {
                         boolean exit5 = true;
                         do {
                             System.out.print("\nChoose the table which you want to see:\n");
-                            System.out.println("Students - press 1\nTeachers - press 2\nSubjects - press 3\nStudent_Subject - press 4\n" +
-                                    "Attendance - press 5\nMarks - press 6\nFor exit - press 0");
+                            System.out.println("""
+                                    Students - press 1
+                                    Teachers - press 2
+                                    Subjects - press 3
+                                    Student_Subject - press 4
+                                    Attendance - press 5
+                                    Marks - press 6
+                                    For exit - press 0""");
                             int key2 = scanner.nextInt();
                             switch (key2) {
-                                case 1:
-                                    tableStudent.dropTable();
-                                    break;
-                                case 2:
-                                    tableTeacher.dropTable();
-                                    break;
-                                case 3:
-                                    tableSubject.dropTable();
-                                    break;
-                                case 4:
-                                    tableStudentsSubjects.dropTable();
-                                    break;
-                                case 5:
-                                    tableAttendance.dropTable();
-                                    break;
-                                case 6:
-                                    tableMarks.dropTable();
-                                    break;
-                                case 0:
-                                    exit5 = false;
-                                    break;
-                                default:
-                                    System.out.println("The wrong instruction");
-                                    break;
-
+                                case 1 -> tableStudent.dropTable();
+                                case 2 -> tableTeacher.dropTable();
+                                case 3 -> tableSubject.dropTable();
+                                case 4 -> tableStudentsSubjects.dropTable();
+                                case 5 -> tableAttendance.dropTable();
+                                case 6 -> tableMarks.dropTable();
+                                case 0 -> exit5 = false;
+                                default -> System.out.println("The wrong instruction");
                             }
                         } while (exit5);
-                        break;
-                    case 6:
+                    }
+                    case 6 -> {
                         boolean exit6 = true;
                         do {
                             System.out.print("\nChoose the table which you want to see:\n");
-                            System.out.println("Students - press 1\nTeachers - press 2\nSubjects - press 3\nStudent_Subject - press 4\n" +
-                                    "Attendance - press 5\nMarks - press 6\nFor exit - press 0");
+                            System.out.println("""
+                                    Students - press 1
+                                    Teachers - press 2
+                                    Subjects - press 3
+                                    Student_Subject - press 4
+                                    Attendance - press 5
+                                    Marks - press 6
+                                    For exit - press 0""");
                             int key2 = scanner.nextInt();
                             switch (key2) {
-                                case 1:
-                                    tableStudent.selectByName();
-                                    break;
-                                case 2:
-                                    tableTeacher.selectByName();
-                                    break;
-                                case 3:
-                                    tableSubject.selectByName();
-                                    break;
-                                case 4:
-                                    tableStudentsSubjects.selectByName();
-                                    break;
-                                case 5:
-                                    tableAttendance.selectByName();
-                                    break;
-                                case 6:
-                                    tableMarks.selectByName();
-                                    break;
-                                case 0:
-                                    exit6 = false;
-                                    break;
-                                default:
-                                    System.out.println("The wrong instruction");
-                                    break;
-
+                                case 1 -> tableStudent.selectByName();
+                                case 2 -> tableTeacher.selectByName();
+                                case 3 -> tableSubject.selectByName();
+                                case 4 -> tableStudentsSubjects.selectByName();
+                                case 5 -> tableAttendance.selectByName();
+                                case 6 -> tableMarks.selectByName();
+                                case 0 -> exit6 = false;
+                                default -> System.out.println("The wrong instruction");
                             }
                         } while (exit6);
-                        break;
-                    case 7:
+                    }
+                    case 7 -> {
                         boolean exit7 = true;
                         do {
                             System.out.print("\nChoose the average point which you want to see:\n");
                             System.out.println("By all group - press 1\nBy student - press 2\nBy 1 subject to student - press 3\nFor exit - press 0");
                             int key2 = scanner.nextInt();
                             switch (key2) {
-                                case 1:
-                                    tableMarks.getAverageByGroup();
-                                    break;
-                                case 2:
-                                    tableStudent.getAverageByGroup();
-                                    break;
-                                case 3:
-                                    tableStudentsSubjects.getAverageByGroup();
-                                    break;
-                                case 0:
-                                    exit7 = false;
-                                    break;
-                                default:
-                                    System.out.println("The wrong instruction");
-                                    break;
-
+                                case 1 -> tableMarks.getAverageByGroup();
+                                case 2 -> tableStudent.getAverageByGroup();
+                                case 3 -> tableStudentsSubjects.getAverageByGroup();
+                                case 0 -> exit7 = false;
+                                default -> System.out.println("The wrong instruction");
                             }
                         } while (exit7);
-                        break;
-                    case 8:
-                        tableStudent.getAllMarks();
-                        break;
-                    case 0:
+                    }
+                    case 8 -> tableStudent.getAllMarks();
+                    case 0 -> {
                         System.out.println("Exit. Good luck!");
                         exit = false;
-                        break;
-                    default:
-                        System.out.println("The wrong instruction!");
-                        break;
+                    }
+                    default -> System.out.println("The wrong instruction!");
                 }
             } while (exit);
         } catch (SQLException e) {

@@ -1,4 +1,4 @@
-package company;
+package pojo;
 
 public class Subject {
     private Integer id;
@@ -9,7 +9,12 @@ public class Subject {
 
     }
 
-    Subject(Integer id, String name, int teacher) {
+    public Subject(String name, int teacher) {
+        this.name = name;
+        this.teacherId = teacher;
+    }
+
+    public Subject(Integer id, String name, int teacher) {
         this.id = id;
         this.name = name;
         this.teacherId = teacher;

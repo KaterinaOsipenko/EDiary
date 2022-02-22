@@ -1,13 +1,15 @@
-package company;
+package repositories;
+
+import pojo.Tables;
 
 import java.sql.*;
 import java.util.Scanner;
 
-public class Student_SubjectRepository implements Tables{
+public class Student_SubjectRepository implements Tables {
     static final Scanner scanner = new Scanner(System.in);
     private final Connection connection;
 
-    Student_SubjectRepository (Connection connection) {
+   public Student_SubjectRepository (Connection connection) {
         this.connection = connection;
         createTable();
     }
@@ -37,10 +39,10 @@ public class Student_SubjectRepository implements Tables{
     public void alterAdd() {
         String addStudent = "ALTER TABLE student_subject ADD CONSTRAINT student_fk FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE ON UPDATE CASCADE";
         String addUpdate = "ALTER TABLE student_subject ADD CONSTRAINT subject_fk FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE ON UPDATE CASCADE";
-        try(PreparedStatement statement = this.connection.prepareStatement(addStudent);
-            PreparedStatement statement1 = this.connection.prepareStatement(addUpdate)) {
-            statement.executeUpdate();
-            statement1.executeUpdate();
+        try(Statement statement = this.connection.createStatement();
+            Statement statement1 = this.connection.createStatement()) {
+            statement.execute(addStudent);
+            statement1.execute(addUpdate);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -62,10 +64,10 @@ public class Student_SubjectRepository implements Tables{
     private void removeConstraint() {
         String removeAttendance = "ALTER TABLE attendance DROP CONSTRAINT student_subject_fk";
         String removeMarks = "ALTER TABLE marks DROP CONSTRAINT marks_fk";
-        try(PreparedStatement statement = this.connection.prepareStatement(removeAttendance);
-            PreparedStatement statement1 = this.connection.prepareStatement(removeMarks)) {
-            statement.executeUpdate();
-            statement1.executeUpdate();
+        try(Statement statement = this.connection.createStatement();
+            Statement statement1 = this.connection.createStatement()) {
+            statement.execute(removeAttendance);
+            statement1.execute(removeMarks);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -91,8 +93,8 @@ public class Student_SubjectRepository implements Tables{
         System.out.print("\nEnter the subject is which you want to add: ");
         int subjectId = scanner.nextInt();
         String add = "INSERT INTO student_subject (student_id, subject_id) VALUES ('" + studentId + "', '" + subjectId + "')";
-        try (PreparedStatement insertTeacher = this.connection.prepareStatement(add)) {
-            insertTeacher.executeUpdate();
+        try (Statement insertTeacher = this.connection.createStatement()) {
+            insertTeacher.execute(add);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -107,8 +109,8 @@ public class Student_SubjectRepository implements Tables{
         System.out.print("Enter id of subject that you would like to change:  ");
         int subjectId = scanner.nextInt();
         String update = "UPDATE student_subject SET student_id = " +  studentId + "subject_id = " + subjectId + " WHERE student_subject.id = " + id;
-        try(PreparedStatement statement = this.connection.prepareStatement(update)) {
-            statement.executeUpdate();
+        try(Statement statement = this.connection.createStatement()) {
+            statement.execute(update);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -137,8 +139,8 @@ public class Student_SubjectRepository implements Tables{
         System.out.print("Enter id of students_subjects that you want to delete from tables: ");
         int id = scanner.nextInt();
         String delete = "DELETE FROM student_subject WHERE student_subject.id = " + id;
-        try(PreparedStatement statement = this.connection.prepareStatement(delete)) {
-            statement.executeUpdate();
+        try(Statement statement = this.connection.createStatement()) {
+            statement.execute(delete);
         } catch (SQLException e) {
             e.printStackTrace();
         }

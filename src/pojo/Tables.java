@@ -1,4 +1,4 @@
-package company;
+package pojo;
 
 public interface Tables {
 

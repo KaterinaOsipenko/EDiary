@@ -1,4 +1,8 @@
-package company;
+package repositories;
+
+import pojo.Mark;
+import pojo.Student;
+import pojo.Tables;
 
 import java.sql.*;
 import java.util.*;
@@ -9,7 +13,7 @@ public class StudentRepository implements Tables {
     private static final HashMap<Integer, Student> students = new HashMap<>();
 
 
-    StudentRepository (Connection connection) {
+    public StudentRepository (Connection connection) {
         this.connection = connection;
         createTable();
     }
@@ -86,8 +90,8 @@ public class StudentRepository implements Tables {
         System.out.print("Enter the new value of last name: ");
         String surname = scanner.next();
         String update = "UPDATE students SET first_name = '" + name +  "' ,last_name = '" + surname + "' WHERE id = " + studentId;
-        try(PreparedStatement statement = this.connection.prepareStatement(update)) {
-            statement.executeUpdate();
+        try(Statement statement = this.connection.createStatement()) {
+            statement.execute(update);
             Student student = students.get(studentId);
             student.setName(name);
             student.setSurname(surname);
@@ -115,8 +119,8 @@ public class StudentRepository implements Tables {
         System.out.print("Enter the student`s id who you want to delete from tables: ");
         int studentId = scanner.nextInt();
         String delete = "DELETE FROM students WHERE id = " + studentId;
-        try(PreparedStatement statement = this.connection.prepareStatement(delete)) {
-            statement.executeUpdate();
+        try(Statement statement = this.connection.createStatement()) {
+            statement.execute(delete);
             students.remove(studentId);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -141,10 +145,10 @@ public class StudentRepository implements Tables {
     public void removeAdd() {
         String removeStudent = "ALTER TABLE student_subject DROP CONSTRAINT student_fk";
         String removeSubject = "ALTER TABLE student_subject DROP CONSTRAINT subject_fk";
-        try(PreparedStatement statement = this.connection.prepareStatement(removeStudent);
-            PreparedStatement statement1 = this.connection.prepareStatement(removeSubject)) {
-            statement.executeUpdate();
-            statement1.executeUpdate();
+        try(Statement statement = this.connection.createStatement();
+           Statement statement1 = this.connection.createStatement()) {
+            statement.execute(removeStudent);
+            statement1.execute(removeSubject);
         } catch (SQLException e) {
             e.printStackTrace();
         }

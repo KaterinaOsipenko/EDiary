@@ -1,4 +1,9 @@
-package company;
+package repositories;
+
+import pojo.Mark;
+import pojo.Student;
+import pojo.Subject;
+import pojo.Tables;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,7 +15,7 @@ public class MarksRepository implements Tables {
     static final Scanner scanner = new Scanner(System.in);
     private final Connection connection;
 
-    MarksRepository(Connection connection) {
+    public MarksRepository(Connection connection) {
         this.connection = connection;
         createTable();
     }
@@ -54,8 +59,8 @@ public class MarksRepository implements Tables {
 
     public void alterAttendance() {
         String alterStudent_Subject = "ALTER TABLE marks ADD CONSTRAINT marks_fk FOREIGN KEY (student_subject_id) REFERENCES student_subject(id) ON UPDATE CASCADE ON DELETE CASCADE";
-        try(PreparedStatement statement = this.connection.prepareStatement(alterStudent_Subject)) {
-            statement.executeUpdate();
+        try(Statement statement = this.connection.createStatement()) {
+            statement.execute(alterStudent_Subject);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -170,8 +175,8 @@ public class MarksRepository implements Tables {
         System.out.print("Enter the student`s id who you want to delete from tables: ");
         int markId = scanner.nextInt();
         String delete = "DELETE FROM marks WHERE mark_id = " + markId;
-        try(PreparedStatement statement = this.connection.prepareStatement(delete)) {
-            statement.executeUpdate();
+        try(Statement statement = this.connection.createStatement()) {
+            statement.execute(delete);
             int studentSubjectId = getStudents_SubjectId(markId);
             Student student = getStudent(studentSubjectId);
             student.deleteMark(getSubject(studentSubjectId).getId(), getMark(markId));

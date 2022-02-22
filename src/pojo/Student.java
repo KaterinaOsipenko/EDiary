@@ -1,6 +1,7 @@
-package company;
+package pojo;
 
-import java.util.ArrayList;
+import repositories.StudentRepository;
+
 import java.util.HashMap;
 import java.util.Map;
 

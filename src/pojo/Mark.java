@@ -1,4 +1,4 @@
-package company;
+package pojo;
 
 import java.util.Date;
 
@@ -7,11 +7,11 @@ public class Mark {
     private Date date;
     private String notice;
 
-    Mark() {
+    public Mark() {
 
     }
 
-    Mark(int value, Date date, String notice) {
+    public Mark(int value, Date date, String notice) {
         this.value = value;
         this.date = date;
         this.notice = notice;

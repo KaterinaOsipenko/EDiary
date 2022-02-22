@@ -1,15 +1,15 @@
-package company;
+package pojo;
 
 public class Teacher extends Person {
 
     private int id;
 
-    Teacher(int id, String name, String surname) {
+    public Teacher(int id, String name, String surname) {
         super(name, surname);
         this.id = id;
     }
 
-    Teacher(String name, String surname) {
+    public Teacher(String name, String surname) {
         super(name, surname);
     }
 
